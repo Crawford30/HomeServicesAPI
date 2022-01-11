@@ -14,6 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:api')->group(function () {
+    // our routes to be protected will go in here
+    Route::post('/logout', 'Auth\ApiAuthController@logout')->name('logout.api');
+});
+
+
+
+Route::group(['middleware' => ['cors', 'json.response']], function () {
+    Route::post('/login',  [App\Http\Controllers\Auth\ApiAuthController::class, 'login'])->name('login.api');
+    Route::post('/register',[App\Http\Controllers\Auth\ApiAuthController::class, 'register'])->name('register.api');
+    Route::post('/logout', [App\Http\Controllers\Auth\ApiAuthController::class, 'logout'])->name('logout.api');
+    
 });
